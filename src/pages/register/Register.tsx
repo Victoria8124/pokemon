@@ -4,6 +4,7 @@ import Field  from "../../ui/field/Field.js";
 import Button from "../../ui/button/Button.js";
 import "./register.scss";
 import AuthStore from "../../store/store.js";
+import axios from "axios";
 
 const Register = () => {
   const navigation = useNavigate();
@@ -16,24 +17,41 @@ const Register = () => {
   const getActivClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "active" : "";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (password !== passwordConfirm) {
-      setError("Passwords do not match");
-      return;
+    if (password.length < 8) {
+       setError("Your password must contain at least 8 characters");
+       return;
     }
+      if (password !== passwordConfirm) {
+        setError("Passwords do not match");
+        return;
+      }
 
     try {
-      AuthStore.registration({ email, password });
+     await AuthStore.registration({ email, password });
       navigation("/login");
-    } catch (error) {
-      console.log("Registration error", error);
-      setError("Registration error");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (!err.response) {
+          setError("No Server Response");
+        } else {
+          switch (err.response.status) {
+            case 400:
+              setError("User already exists");
+              break;
+            case 500:
+              setError("Internal Server Error");
+              break;
+            default:
+              setError("Login Failed");
+          }
+        }
+      }
     }
   };
-    
 
   return (
     <div className="auth-container">
@@ -63,7 +81,7 @@ const Register = () => {
             </ul>
           </div>
           <Field
-            type="text"
+            type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -81,9 +99,9 @@ const Register = () => {
             onChange={(e) => setPasswordConfirm(e.target.value)}
           />
 
-          {error && <p className="error">{error}</p>}
+          {error && <div className="error">{error}</div>}
 
-          <Button text="Sing in" type='submit'/>
+          <Button text="Sing in" type="submit" />
         </form>
       </div>
     </div>

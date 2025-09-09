@@ -1,27 +1,61 @@
-// import type { AxiosResponse } from "axios";
-// import type { AuthResponse } from "../models/response/AuthResponse.moduls";
+import type { AxiosResponse } from "axios";
 import { apiInstance } from "../api/api.axios";
-
-// export default class AuthService {
-//     static async login(email: string, password: string): Promise<AxiosResponse<AuthResponse>>{
-//         return apiInstance.post<AuthResponse>('/auth/sign-in', {email, password})
-//     }
-
-//     static async registration(email: string, password: string): Promise<AxiosResponse<AuthResponse>>{
-//         return apiInstance.post<AuthResponse>('/auth/sign-up', {email, password})
-//     }
-// }
+import Cookies from 'js-cookie';
+import type { IAuthResponse } from "../type/type";
 
 export const AuthService = {
-  login(email: string, password: string) {
-    return apiInstance.post("/auth/sing-up", { email, password });
+  async login(
+    email: string,
+    password: string
+  ): Promise<AxiosResponse<IAuthResponse>> {
+    const resp = await apiInstance.post<IAuthResponse>("/auth/sign-in", {
+      email,
+      password,
+    });
+
+    if (resp.data.access_token) {
+      Cookies.set("access_token", resp.data.access_token, {
+        expires: 1 / 24,
+      });
+    }
+
+    if (resp.data.refresh_token) {
+      Cookies.set("refresh_token", resp.data.refresh_token, {
+        expires: 20 / 24,
+      });
+    }
+
+    return resp;
   },
 
-    registration(email: string, password: string) {
-    return apiInstance.post("/auth/sing-in", { email, password });
-    },
+  async registration(email: string, password: string): Promise<AxiosResponse<IAuthResponse>> {
+    const resp = await apiInstance.post<IAuthResponse>("/auth/sign-up", {
+      companyName: "PokemonClicker",
+      userName: email,
+      email,
+      password,
+    });
 
-  refreshToken() {
-    return apiInstance.get("/auth/refresh");
-  }
+    if (resp.data.access_token) {
+      Cookies.set("access_token", resp.data.access_token, {
+        expires: 1 / 24,
+      });
+    }
+
+    if (resp.data.refresh_token) {
+      Cookies.set("refresh_token", resp.data.refresh_token, {
+        expires: 20 / 24,
+      });
+    }
+
+    return resp;
+  },
+
+  async refreshToken(): Promise<AxiosResponse<IAuthResponse>> {
+    const resp = await apiInstance.get<IAuthResponse>("/auth/refresh");
+    if (resp.data.access_token) {
+      Cookies.set("access_token", resp.data.access_token, { expires: 1 / 24 });
+    }
+    return resp;
+  },
 };

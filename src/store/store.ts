@@ -1,15 +1,6 @@
-// import { configureStore } from "@reduxjs/toolkit";
-// import authReducer from "../features/auth/authSlice";
-
-// export const store = configureStore({
-//     reducer: {
-//         auth: authReducer,
-//     },
-// })
-
-// export default store;
 import { makeAutoObservable } from "mobx";
 import {AuthService} from "../services/AuthService";
+import Cookies from 'js-cookie';
 
 class AuthStore {
   isAuth = false;
@@ -22,11 +13,11 @@ class AuthStore {
   async login({ email, password }: { email: string; password: string }) {
     this.isAuthInProgress = true;
     try {
-      const resp = await AuthService.login(email, password);
-      localStorage.setItem("token", resp.data.accessToken);
+      await AuthService.login(email, password);
       this.isAuth = true;
     } catch (error) {
-      console.log("login error:", error);
+      this.isAuth = false;
+       throw error;
     } finally {
       this.isAuthInProgress = false;
     }
@@ -35,11 +26,12 @@ class AuthStore {
   async registration({ email, password }: { email: string; password: string }) {
     this.isAuthInProgress = true;
     try {
-      const resp = await AuthService.registration(email, password);
-      localStorage.setItem("token", resp.data.accessToken);
+      await AuthService.registration(email, password);
       this.isAuth = true;
     } catch (error) {
-      console.log("login error", error);
+      this.isAuth = false;
+      console.log("registration error", error);
+      throw error;
     } finally {
       this.isAuthInProgress = false;
     }
@@ -48,11 +40,21 @@ class AuthStore {
   async checkAuth() {
     this.isAuthInProgress = true;
     try {
-      const resp = await AuthService.refreshToken();
-      localStorage.setItem("token", resp.data.accessToken);
-      this.isAuth = true;
+      const refreshToken = Cookies.get("refresh_token");
+      if (refreshToken) {
+        const resp = await AuthService.refreshToken();
+        if (resp.data.access_token) {
+          Cookies.set("access_token", resp.data.access_token, {
+            expires: 1 / 24,
+          });
+          this.isAuth = true;
+        }
+      } else {
+        this.isAuth = false;
+      }
     } catch (error) {
-      console.log("login error", error);
+      this.isAuth = false;
+      console.log("checkAuth error", error);
     } finally {
       this.isAuthInProgress = false;
     }

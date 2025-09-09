@@ -7,7 +7,7 @@ interface FieldProps {
   value?: string;
 }
 
-const Field: React.FC<FieldProps> = ({ placeholder, type, onChange }) => {
+const Field: React.FC<FieldProps> = ({ placeholder, type, onChange, value }) => {
   return (
     <div className="field-wrapper">
       <div className="field-label">
@@ -19,6 +19,8 @@ const Field: React.FC<FieldProps> = ({ placeholder, type, onChange }) => {
         placeholder={placeholder}
         type={type}
         onChange={onChange}
+        value={value}
+        required
       />
     </div>
   );

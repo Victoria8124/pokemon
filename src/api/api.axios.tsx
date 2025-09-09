@@ -1,4 +1,6 @@
 import axios from 'axios';
+import Cookies from 'js-cookie'
+import { AuthService} from '../services/AuthService';
 
 const API_URL = "https://cafe-admin-api-production.up.railway.app";
 
@@ -8,7 +10,10 @@ export const apiInstance = axios.create({
 });
 
 apiInstance.interceptors.request.use((config) => {
-  config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+  const token = Cookies.get("access_token");
+  if(token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
 
@@ -19,15 +24,16 @@ apiInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = { ...error.config };
     originalRequest._isRetry = true;
-    if (error.response.status === 401 && error.config && !error.config) {
-      try {
-        const resp = await axios.get(`${API_URL}/auth/refresh`);
-        localStorage.setItem("token", resp.data.accessToken);
-        return apiInstance.request(originalRequest);
-      } catch {
-        console.log("НЕ АВТОРИЗОВАН");
-      }
-    }
-    throw error;
+if (error.response?.status === 401 && !error.config._isRetry) {
+  originalRequest._isRetry = true;
+  try {
+    const resp = await AuthService.refreshToken();
+    Cookies.set("access_token", resp.data.access_token, { expires: 1 / 24 });
+    return apiInstance.request(originalRequest);
+  } catch {
+    console.log("НЕ АВТОРИЗОВАН");
+  }
+}
+    return Promise.reject(error);
   }
 );
