@@ -23,17 +23,19 @@ apiInstance.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = { ...error.config };
-    originalRequest._isRetry = true;
-if (error.response?.status === 401 && !error.config._isRetry) {
-  originalRequest._isRetry = true;
-  try {
-    const resp = await AuthService.refreshToken();
-    Cookies.set("access_token", resp.data.access_token, { expires: 1 / 24 });
-    return apiInstance.request(originalRequest);
-  } catch {
-    console.log("НЕ АВТОРИЗОВАН");
-  }
-}
+    
+    if (error.response?.status === 401 && !error.config._isRetry) {
+      originalRequest._isRetry = true;
+      try {
+        const resp = await AuthService.refreshToken();
+        Cookies.set("access_token", resp.data.access_token, {
+          expires: 1 / 24,
+        });
+        return apiInstance.request(originalRequest);
+      } catch {
+        console.log("НЕ АВТОРИЗОВАН");
+      }
+    }
     return Promise.reject(error);
   }
 );

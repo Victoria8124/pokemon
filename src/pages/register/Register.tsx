@@ -56,9 +56,9 @@ const Register = () => {
   return (
     <div className="auth-container">
       <div className="header-image">
-        <img src="../../public/image 1.png" alt="clicker" />
+        <img src="/public/image 1.png" alt="clicker" />
         <hr className="divider" />
-        <img src="../../public/Clicker-12-14-2023 (3) 1.png" alt="pokemon" />
+        <img src="/Clicker-12-14-2023 (3) 1.png" alt="pokemon" />
       </div>
       <div className="auth-form">
         <form className="form" onSubmit={handleSubmit}>
