@@ -1,18 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { observer } from "mobx-react-lite";
-import authStore from "../store/store";
+import { selectAccessToken } from "../features/auth/authSlice";
+import { useSelector } from "react-redux";
 
-const PrivateRoute = observer(() => {
-  if (authStore.isAuthInProgress) {
-    return <div>Checking auth...</div>;
+export const PrivateRoute = () => {
+  const token = useSelector(selectAccessToken);
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
   }
-
-  if (authStore.isAuth) {
-    return <Outlet />;
-  }
-
-  return <Navigate to="/login" replace />;
-});
-
-export default PrivateRoute;
-
+  return <Outlet />;
+};

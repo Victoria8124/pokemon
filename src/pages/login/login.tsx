@@ -1,50 +1,36 @@
-import { useState} from 'react'
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Field from "../../ui/field/Field";
 import Button from "../../ui/button/Button";
-import AuthStore from '../../store/store';
-import axios from 'axios';
 import "./Login.scss";
+import { login } from "../../features/auth/authActions.ts";
+import { useAppDispatch } from "../../app/hooks.js";
+import { toast } from "react-toastify";
 
-const Login = () => {
+export const Login = () => {
   const navigation = useNavigate();
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const dispatch = useAppDispatch();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const getActivClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "active" : "";
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  try {
-    await AuthStore.login({ email, password });
-    if (AuthStore.isAuth) {
-      navigation("/user");
+    const resultAction = await dispatch(login({ email, password }));
+
+    if (login.fulfilled.match(resultAction)) {
+      toast.success("Login successful!");
+      navigation("/profile");
+    } else {
+      const errorMessage =
+        (resultAction.payload as { message?: string })?.message ||
+        "Something went wrong";
+      toast.error(errorMessage);
     }
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      if (!err.response) {
-        setError("No Server Response");
-      } else {
-        switch (err.response.status) {
-          case 400:
-            setError("User not found or password not found");
-            break;
-          case 401:
-            setError("Invalid password");
-            break;
-          case 500:
-            setError("Internal Server Error");
-            break;
-          default:
-            setError("Login Failed");
-        }
-      }
-    }
-  }
-};
+  };
 
   return (
     <div className="auth-container">
@@ -69,20 +55,22 @@ const handleSubmit = async (e: React.FormEvent) => {
               </li>
             </ul>
           </div>
-          <Field
-            type="email"
-            value={email}
-            placeholder="Login"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Field
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          {error && <div className="error">{error}</div>}
+          <Field placeholder="Email" required icon="/public/_.png">
+            <input
+              className="input-ui"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Field>
+          <Field placeholder="Password" required icon="/public/_.png">
+            <input
+              className="input-ui"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Field>
 
           <Button type="submit" text="Sign in" />
         </form>
@@ -90,5 +78,3 @@ const handleSubmit = async (e: React.FormEvent) => {
     </div>
   );
 };
-
-export default Login;

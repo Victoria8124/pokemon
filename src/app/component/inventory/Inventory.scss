@@ -1,0 +1,40 @@
+.inventory-wrapper {
+    width: 320px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+}
+.inventory-title {
+    font-weight: bold;
+    font-size: 24px;
+    color: #FFCC01;
+    -webkit-text-stroke: 0.5px #365FAC;
+    margin: 0 0 16px 0;
+}
+
+.inventory-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    height: 48px;
+    border-radius: 4px;
+    background: #EFEFEF;
+    border: 2px solid transparent;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+.inventory-button:hover {
+    border: 3px solid #365FAC;
+    transition: border 0.3s ease;
+}
+
+.inventory-value {
+    font-weight: bold;
+    font-size: 24px;
+    color: #FFCC01;
+    -webkit-text-stroke: 0.5px #365FAC;
+}

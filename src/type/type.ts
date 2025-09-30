@@ -5,5 +5,12 @@ export interface IUser {
 
 export interface IAuthResponse {
     access_token: string;
-    refresh_token?: string;
+}
+
+export interface AuthState {
+  access_token: string | null;
+}
+
+export interface MoneyState {
+    balance: number;
 }

@@ -3,56 +3,36 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Field  from "../../ui/field/Field.js";
 import Button from "../../ui/button/Button.js";
 import "./register.scss";
-import AuthStore from "../../store/store.js";
-import axios from "axios";
+import { useAppDispatch } from "../../app/hooks.js";
+import { registration } from "../../features/auth/authActions.ts";
+import { toast } from "react-toastify";
 
-const Register = () => {
+
+export const Register = () => {
   const navigation = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const [password, setPassword] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [passwordConfirm, setPasswordConfirm] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [passwordConfirm, setPasswordConfirm] = useState<string>("");
 
   const getActivClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "active" : "";
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
 
-    if (password.length < 8) {
-       setError("Your password must contain at least 8 characters");
-       return;
-    }
-      if (password !== passwordConfirm) {
-        setError("Passwords do not match");
-        return;
-      }
-
-    try {
-     await AuthStore.registration({ email, password });
+    const resultAction = await dispatch(registration({ email, password }));
+    if (registration.fulfilled.match(resultAction)) {
+      toast.success("Registration successful! Please log in.");
       navigation("/login");
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        if (!err.response) {
-          setError("No Server Response");
-        } else {
-          switch (err.response.status) {
-            case 400:
-              setError("User already exists");
-              break;
-            case 500:
-              setError("Internal Server Error");
-              break;
-            default:
-              setError("Login Failed");
-          }
-        }
-      }
+    } else {
+      const errorMessage =
+        (resultAction.payload as { message?: string })?.message ||
+        "Something went wrong";
+      toast.error(errorMessage);
     }
   };
-
   return (
     <div className="auth-container">
       <div className="header-image">
@@ -80,26 +60,34 @@ const Register = () => {
               </li>
             </ul>
           </div>
+          <Field placeholder="Email" required icon="/public/_.png">
+            <input
+              type="email"
+              className="input-ui"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Field>
+          <Field required icon="/public/_.png" placeholder="Password">
+            <input
+              type="password"
+              value={password}
+              className="input-ui"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Field>
           <Field
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Field
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Field
-            type="password"
             placeholder="Password confirmation"
-            value={passwordConfirm}
-            onChange={(e) => setPasswordConfirm(e.target.value)}
-          />
-
-          {error && <div className="error">{error}</div>}
+            required
+            icon="/public/_.png"
+          >
+            <input
+              type="password"
+              value={passwordConfirm}
+              className="input-ui"
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+            />
+          </Field>
 
           <Button text="Sing in" type="submit" />
         </form>
@@ -107,5 +95,3 @@ const Register = () => {
     </div>
   );
 };
-
-export default Register;

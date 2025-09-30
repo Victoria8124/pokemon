@@ -1,61 +1,27 @@
-import type { AxiosResponse } from "axios";
 import { apiInstance } from "../api/api.axios";
-import Cookies from 'js-cookie';
-import type { IAuthResponse } from "../type/type";
+import type { IAuthResponse, IUser } from "../type/type";
 
 export const AuthService = {
-  async login(
-    email: string,
-    password: string
-  ): Promise<AxiosResponse<IAuthResponse>> {
+  async login({ email, password }: IUser): Promise<IAuthResponse> {
     const resp = await apiInstance.post<IAuthResponse>("/auth/sign-in", {
       email,
       password,
     });
-
-    if (resp.data.access_token) {
-      Cookies.set("access_token", resp.data.access_token, {
-        expires: 1 / 24,
-      });
-    }
-
-    if (resp.data.refresh_token) {
-      Cookies.set("refresh_token", resp.data.refresh_token, {
-        expires: 20 / 24,
-      });
-    }
-
-    return resp;
+    return resp.data;
   },
 
-  async registration(email: string, password: string): Promise<AxiosResponse<IAuthResponse>> {
+  async registration({ email, password }: IUser): Promise<IAuthResponse> {
     const resp = await apiInstance.post<IAuthResponse>("/auth/sign-up", {
-      companyName: "PokemonClicker",
-      userName: email,
       email,
       password,
+      userName: email,
+      companyName: "PokemonClicker",
     });
-
-    if (resp.data.access_token) {
-      Cookies.set("access_token", resp.data.access_token, {
-        expires: 1 / 24,
-      });
-    }
-
-    if (resp.data.refresh_token) {
-      Cookies.set("refresh_token", resp.data.refresh_token, {
-        expires: 20 / 24,
-      });
-    }
-
-    return resp;
+    return resp.data;
   },
 
-  async refreshToken(): Promise<AxiosResponse<IAuthResponse>> {
+  async refreshToken(): Promise<IAuthResponse> {
     const resp = await apiInstance.get<IAuthResponse>("/auth/refresh");
-    if (resp.data.access_token) {
-      Cookies.set("access_token", resp.data.access_token, { expires: 1 / 24 });
-    }
-    return resp;
+    return resp.data;
   },
 };
