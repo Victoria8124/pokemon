@@ -14,3 +14,15 @@ export interface AuthState {
 export interface MoneyState {
     balance: number;
 }
+
+export interface PokemonType {
+  name: string | null;
+  weight: number | null;
+  sprites: {
+    front_default: string | null;
+  };
+}
+
+export interface PokemonCardProps {
+  pokemon: PokemonType;
+}

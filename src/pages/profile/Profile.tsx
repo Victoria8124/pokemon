@@ -2,6 +2,7 @@ import "./Profile.scss";
 import { useAppSelector } from "../../app/hooks";
 import Inventory from "../../app/component/inventory/Inventory";
 import Shop from "../../app/component/shop/Shop";
+import Pokemon from "../../app/component/pokemons/Pokemon";
 
 const Profile = () => {
   const balance = useAppSelector((state) => state.money.balance);
@@ -21,6 +22,7 @@ const Profile = () => {
       </div>
       <div className="inventory">
         <Inventory />
+        <Pokemon/>
         <Shop />
       </div>
     </div>
