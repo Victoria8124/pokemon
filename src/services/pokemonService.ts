@@ -7,10 +7,13 @@ export const pokemonService = {
     try {
       const response = await pokeApi.get<PokemonType>(`pokemon/${randomId}`);
       const data = response.data;
-      return data;
+      const coins = Math.floor(Math.random() * 10) + 1;
+      const newData = { ...data, incomePerSecond: coins };
+      console.log(data);
+      return newData;
     } catch (error) {
-      console.error("Ошибка при получении покемона:", error);
-      return null;
+      console.error("Ошибка:", error);
+      return null
     }
   },
 };

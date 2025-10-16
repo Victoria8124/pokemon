@@ -17,7 +17,7 @@ const moneySlice = createSlice({
             state.balance -= action.payload;
             localStorage.setItem("balance", String(state.balance));
         }
-    }
+    } 
 });
 
 export const { addMoney, removeMoney } = moneySlice.actions;
