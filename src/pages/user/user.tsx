@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import "./user.scss";
 
 type Post = {
   id: number;
@@ -11,10 +12,8 @@ import axios from "axios";
 
 const User = () => {
    const navigation = useNavigate();
-   // const [users, setUsers] = useState();
    const [posts, setPosts] = useState<Post[]>([]);
    const [isActive, setIsActive] = useState<boolean>(true);
-
 const handleAdmin = () => { 
       navigation("/admin");
 }

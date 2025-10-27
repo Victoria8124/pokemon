@@ -1,56 +1,124 @@
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect} from 'react';
+import { useState } from "react";
+import axios from "axios";
+
+interface ItemType {
+  name: string;
+  url: string;
+}
+
+interface ItemDetail {
+  name: string;
+  image?: string | null;
+}
 
 const Admin = () => {
-    const navigation = useNavigate();
-    const [count, setCount] = useState(0);
-    const [name, setName] = useState("Vika");
+  const [query, setQuery] = useState("");
+  const [items, setItems] = useState<ItemDetail[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    
-    const handleAdmin = () => {
-        navigation("/admin");
-    };
+  const handleSearch = async () => {
+    setLoading(true);
+    setItems([]);
 
-    const handleUser = () => {
-        navigation("/login");
-    };
-  
-    const increment = () => {
-      setCount(count + 1);
-      return count;
+    try {
+      const { data } = await axios.get(
+        "https://pokeapi.co/api/v2/item?limit=1000"
+      );
+
+      // фильтруем по введённому слову
+      const filtered = data.results.filter((item: ItemType) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      );
+
+      // берём первые 10 совпадений
+      const detailedItems = await Promise.all(
+        filtered.slice(0, 10).map(async (item: ItemType) => {
+          const res = await axios.get(item.url);
+          return {
+            name: item.name,
+            image: res.data.sprites?.default || null,
+          };
+        })
+      );
+
+      setItems(detailedItems);
+    } catch (error) {
+      console.error("Ошибка при загрузке:", error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    useEffect(() => {
-      console.log("🔥 Без зависимостей — вызывается после каждого рендера");
-    }) 
+  return (
+    <div style={{ textAlign: "center", marginTop: "40px" }}>
+      <h2>Поиск предметов по названию</h2>
 
-    useEffect(() => {
-      console.log("✅ Пустой массив — вызывается один раз при монтировании");
-    }, [])
+      <input
+        type="text"
+        placeholder="Введите berry или ball"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        style={{
+          padding: "10px",
+          width: "250px",
+          borderRadius: "8px",
+          border: "1px solid #ccc",
+        }}
+      />
 
-    useEffect(() => {
-      console.log("👀 [count] — вызывается при изменении count");
-    }, [count])
+      <button
+        onClick={handleSearch}
+        style={{
+          marginLeft: "10px",
+          padding: "10px 20px",
+          borderRadius: "8px",
+          cursor: "pointer",
+        }}
+      >
+        Найти
+      </button>
 
-    useEffect(() => {
-      console.log("👀 [name] — вызывается при изменении user и count");
-    }, [name, count]);
- 
-    return (
-      <>
-        <h1>Admin</h1>
-        <p>Counter: {count}</p>
-        <p>User: {name}</p>
-        <div>
-          <button onClick={increment}>+</button>
-          <button onClick={() => setName(name === "Вика" ? "Пикачу" : "Вика")}>
-            изменить имя
-          </button>
-          <button onClick={handleAdmin}>Admin</button>
-          <button onClick={handleUser}>Login</button>
-        </div>
-      </>
-    );
+      {loading && <p>Загрузка...</p>}
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+          gap: "20px",
+          marginTop: "30px",
+          padding: "0 40px",
+        }}
+      >
+        {items.map((item) => (
+          <div
+            key={item.name}
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "10px",
+              padding: "10px",
+              textAlign: "center",
+              background: "#f9f9f9",
+            }}
+          >
+            {item.image ? (
+              <img
+                src={item.image}
+                alt={item.name}
+                style={{
+                  width: "80px",
+                  height: "80px",
+                  objectFit: "contain",
+                }}
+              />
+            ) : (
+              <div style={{ height: "80px" }}>Нет изображения</div>
+            )}
+            <h4>{item.name}</h4>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default Admin;

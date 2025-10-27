@@ -2,6 +2,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { PokemonType } from "../../type/type";
 import type { RootState } from "../../app/store";
 import { createSlice } from "@reduxjs/toolkit";
+import { pokemonRandom, addPokemonButton } from "./pokemonActions";
 
 const loadFromLocalStorage = (): PokemonType[] => {
   try {
@@ -24,20 +25,25 @@ const pokemonSlice = createSlice({
   name: "pokemon",
   initialState,
   reducers: {
-    setPokemons: (
-        state,
-        action: PayloadAction<PokemonType[]>
-      ) => {
+    setPokemons: (state, action: PayloadAction<PokemonType[]>) => {
       state.pokemons = action.payload;
       localStorage.setItem("pokemons", JSON.stringify(action.payload));
     },
-    addPokemon: (
-      state,
-      action: PayloadAction<PokemonType[]>
-    ) => {
+    addPokemon: (state, action: PayloadAction<PokemonType[]>) => {
       state.pokemons.push(...action.payload);
       localStorage.setItem("pokemons", JSON.stringify(state.pokemons));
-    }
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(pokemonRandom.fulfilled, (state, action) => {
+        state.pokemons = action.payload;
+        localStorage.setItem("pokemons", JSON.stringify(state.pokemons));
+      })
+      .addCase(addPokemonButton.fulfilled, (state, action) => {
+        state.pokemons.push(...action.payload);
+        localStorage.setItem("pokemons", JSON.stringify(state.pokemons));
+      });
   },
 });
 

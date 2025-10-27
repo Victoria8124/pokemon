@@ -1,7 +1,7 @@
 import './Field.scss'
 
 interface FieldProps {
-  placeholder: string;
+  placeholder?: string;
   required?: boolean;
   icon?: string;
 children?: React.ReactNode;

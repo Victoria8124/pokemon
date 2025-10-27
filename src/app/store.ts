@@ -7,27 +7,28 @@ import pokemonReducer, {
 } from "../features/pokemon/pokemonSlice";
 import { addMoney } from "../features/money/moneySlice";
 import { isAnyOf } from "@reduxjs/toolkit";
+import { pokemonRandom, addPokemonButton } from "../features/pokemon/pokemonActions";
+import queryReducer from "../features/query/querySlice";
 
 export const listenerMiddleware = createListenerMiddleware();
 
-listenerMiddleware.startListening({
-  matcher: isAnyOf(addPokemon, setPokemons), 
-  effect: (action, listenerApi) => {
-      console.log(action.payload); 
-    if ((listenerApi as any).intervalId) return;
+let intervalId: ReturnType<typeof setInterval> | null = null;
 
-    const intervalId = setInterval(() => {
+listenerMiddleware.startListening({
+  matcher: isAnyOf(addPokemon, setPokemons, addPokemonButton.fulfilled, pokemonRandom.fulfilled),
+  effect: (action, listenerApi) => {
+    console.log(action.payload);
+    if (intervalId) return;
+
+    intervalId = setInterval(() => {
       const state = listenerApi.getState() as RootState;
 
       const totalIncomePerSecond = state.pokemon.pokemons.reduce(
         (sum, p) => sum + (p.incomePerSecond || 0),
         0
       );
-        listenerApi.dispatch(addMoney(totalIncomePerSecond));
-
+      listenerApi.dispatch(addMoney(totalIncomePerSecond));
     }, 1000);
-
-    (listenerApi as any).intervalId = intervalId;
   },
 });
 
@@ -37,6 +38,7 @@ export const store = configureStore({
     auth: authReducer,
     money: moneyReducer,
     pokemon: pokemonReducer,
+    query: queryReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(listenerMiddleware.middleware),

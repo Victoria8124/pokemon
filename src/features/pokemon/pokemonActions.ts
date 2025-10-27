@@ -1,13 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { PokemonType } from "../../type/type";
 import { pokemonService } from "../../services/pokemonService";
-import { setPokemons, addPokemon } from "./pokemonSlice";
 import axios from "axios";
 
 export const pokemonRandom = createAsyncThunk<
   PokemonType[],
   void
->("pokemon/pokemonRandom", async (_, { dispatch, rejectWithValue }) => {
+>("pokemon/pokemonRandom", async (_, {  rejectWithValue }) => {
   try {
     const saved = localStorage.getItem("pokemons");
     if (saved) {
@@ -21,7 +20,6 @@ export const pokemonRandom = createAsyncThunk<
       return rejectWithValue("Ошибка при получении покемона");
     }
     const arrayData = [data];
-    dispatch(setPokemons(arrayData));
 
     return arrayData;
   } catch (error) {
@@ -36,14 +34,13 @@ export const pokemonRandom = createAsyncThunk<
 
 export const addPokemonButton = createAsyncThunk<PokemonType[], void>(
   "pokemon/addPokemonButton",
-  async (_, {dispatch, rejectWithValue}) => {
+  async (_, { rejectWithValue}) => {
     try {
       const data = await pokemonService.getRandomPokemon();
       if(!data) {
         return rejectWithValue("Ошибка при получении покемона");
       }
       const arrayData = [data];
-      dispatch(addPokemon(arrayData));
       return arrayData;
     } catch (error) {
       if (axios.isAxiosError(error)) {

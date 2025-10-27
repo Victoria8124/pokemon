@@ -1,0 +1,96 @@
+// .checkbox {
+//     display: flex;
+//     align-items: center;
+//     cursor: pointer;
+//     gap: 8px;
+// }
+// .checkboxIn {
+//     display: none;
+// }
+
+// .custom-checkbox {
+//     width: 20px;
+//     height: 20px;
+//     border: 2px solid gray;
+//     // border-radius: 4px;
+//     // transition: all 0.3s;
+// }
+
+//  .custom-checkbox:hover {
+//     background-color: red;
+// }
+
+// .checkboxIn:checked+.custom-checkbox {
+//     background-color: red;
+// }
+
+.card {
+    width: 250px;
+    height: 150px;
+    perspective: 1000px;
+}
+
+.card__inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    /* плавность */
+    transform-style: preserve-3d;
+    /* для 3D эффекта */
+}
+
+.card:hover .card__inner {
+    transform: rotateY(180deg);
+    /* переворот */
+}
+
+.card__front,
+.card__back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    /* скрываем заднюю сторону */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+    color: white;
+}
+
+.card__front {
+    background-color: #166158;
+}
+
+.card__back {
+    background-color: #b0413e;
+   transform: rotateY(180deg);
+    /* чтобы при перевороте была видна */
+}
+
+
+
+.stars {
+    display: flex;
+    gap: 5px;
+}
+
+.star {
+    font-size: 32px;
+    color: #ccc;
+    /* серые по умолчанию */
+    cursor: pointer;
+    transition: color 0.3s, transform 0.2s;
+}
+
+.star:hover {
+    transform: scale(1.2);
+}
+
+.star.active {
+    color: gold;
+    /* активные — жёлтые */
+}
