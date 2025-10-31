@@ -1,21 +1,21 @@
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import { removeMoney } from "../../../features/money/moneySlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { removeMoney } from "../../features/money/moneySlice";
 import { toast } from "react-toastify";
-import './Shop.scss'
-import { searchQuery } from "../../../features/query/queryActions";
-import SearchField from '../searchField/searchField'
+import "./Shop.scss";
+import { searchQuery } from "../../features/query/queryActions";
+import SearchField from "../../features/search/searchField";
 
 const Shop = () => {
   const dispatch = useAppDispatch();
   const balance = useAppSelector((state) => state.money.balance);
-  const queryItems = useAppSelector((state) => state.query.queryItems)
+  const queryItems = useAppSelector((state) => state.query.queryItems);
   //const [query, setQuery] = useState<string>('');
 
   const removeMoneyBalance = () => {
     if (balance >= 1000) {
       dispatch(removeMoney(1000));
     } else {
-        toast.info('Недостаточно средств')
+      toast.info("Недостаточно средств");
     }
   };
 
@@ -36,13 +36,11 @@ const Shop = () => {
           >
             <h3>{it.name}</h3>
             {it.image && <img src={it.image} alt={it.name} />}
+            <button className="shop-button" onClick={removeMoneyBalance}>
+              Купить за 5000
+            </button>
           </div>
         ))}
-      </div>
-      <div>
-        <button className="shop-button" onClick={removeMoneyBalance}>
-          Купить за {`1000`}
-        </button>
       </div>
     </div>
   );

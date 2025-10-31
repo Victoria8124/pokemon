@@ -1,5 +1,5 @@
-import { apiInstance } from "../api/api.axios";
-import type { IAuthResponse, IUser } from "../type/type";
+import { apiInstance } from "../../shared/api/api.axios";
+import type { IAuthResponse, IUser } from "../../entities/auth/model/authTypes";
 
 export const AuthService = {
   async login({ email, password }: IUser): Promise<IAuthResponse> {

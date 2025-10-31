@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import Field from "../../ui/field/Field";
-import Button from "../../ui/button/Button";
+import Field from "../../shared/ui/field/Field.tsx";
+import Button from "../../shared/ui/button/Button.tsx";
 import "./Login.scss";
 import { login } from "../../features/auth/authActions.ts";
 import { useAppDispatch } from "../../app/hooks.js";
 import { toast } from "react-toastify";
 
-export const Login = () => {
+const Login = () => {
   const navigation = useNavigate();
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState<string>("");
@@ -78,3 +78,5 @@ export const Login = () => {
     </div>
   );
 };
+
+export default Login;

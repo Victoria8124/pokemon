@@ -1,8 +1,8 @@
 import "./Profile.scss";
 import { useAppSelector } from "../../app/hooks";
-import Inventory from "../../app/component/inventory/Inventory";
-import Shop from "../../app/component/shop/Shop";
-import Pokemon from "../../app/component/pokemons/Pokemon";
+import Inventory from "../../widgets/inventory/Inventory";
+import Shop from "../../widgets/shop/Shop";
+import Pokemon from "../../widgets/pokemons/Pokemon";
 
 const Profile = () => {
   const balance = useAppSelector((state) => state.money.balance);

@@ -1,9 +1,9 @@
-import axios from 'axios';
-import Cookies from 'js-cookie'
-import { AuthService} from '../services/AuthService';
-import { setTokens } from '../features/auth/authSlice';
-import { store } from '../app/store';
-import { logOut } from '../features/auth/authSlice';
+import axios from "axios";
+import Cookies from "js-cookie";
+import { AuthService } from "../../features/auth/AuthService";
+import { setTokens } from "../../features/auth/authSlice";
+import { store } from "../../app/store";
+import { logOut } from "../../features/auth/authSlice";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

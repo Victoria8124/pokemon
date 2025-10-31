@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import Field  from "../../ui/field/Field.js";
-import Button from "../../ui/button/Button.js";
+import Field from "../../shared/ui/field/Field.js";
+import Button from "../../shared/ui/button/Button.js";
 import "./register.scss";
 import { useAppDispatch } from "../../app/hooks.js";
 import { registration } from "../../features/auth/authActions.ts";
 import { toast } from "react-toastify";
 
-
-export const Register = () => {
+const Register = () => {
   const navigation = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -95,3 +94,5 @@ export const Register = () => {
     </div>
   );
 };
+
+export default Register;

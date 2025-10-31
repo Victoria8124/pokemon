@@ -1,5 +1,5 @@
-import { pokeApi } from "../api/api.pokemon";
-import type { PokemonType } from "../type/type";
+import { pokeApi } from "../../entities/pokemon/api/api.pokemon";
+import type { PokemonType } from "../../entities/pokemon/model/pokemonTypes";
 
 export const pokemonService = {
   async getRandomPokemon(): Promise<PokemonType | null> {
@@ -13,7 +13,7 @@ export const pokemonService = {
       return newData;
     } catch (error) {
       console.error("Ошибка:", error);
-      return null
+      return null;
     }
   },
 };

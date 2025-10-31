@@ -1,24 +1,22 @@
-import { createSlice } from "@reduxjs/toolkit"
-import type { RootState } from "../../app/store"
-import {searchQuery} from './queryActions'
-import type { QueryState } from '../../type/type'
+import { createSlice } from "@reduxjs/toolkit";
+import type { RootState } from "../../app/store";
+import { searchQuery } from "./queryActions";
+import type { QueryState } from "../../entities/query/model/queryTypes";
 
 const initialState: QueryState = {
-    queryItems: [],
-}
+  queryItems: [],
+};
 
 const querySlice = createSlice({
-    name: 'queryItems',
-    initialState,
-    reducers: {
-    },
-    extraReducers: (builder) => {
-     builder.addCase(searchQuery.fulfilled, (state, action) => {
-        state.queryItems = action.payload
-     });
-    }
-})
-
+  name: "queryItems",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(searchQuery.fulfilled, (state, action) => {
+      state.queryItems = action.payload;
+    });
+  },
+});
 
 export default querySlice.reducer;
 

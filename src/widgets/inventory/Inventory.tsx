@@ -1,6 +1,6 @@
 import './Inventory.scss'
-import { useAppDispatch } from '../../hooks.js';
-import { addMoney } from '../../../features/money/moneySlice.js';
+import { useAppDispatch } from '../../app/hooks.ts';
+import { addMoney } from '../../features/money/moneySlice.ts';
 
 const Inventory = () => {
   const dispatch = useAppDispatch();

@@ -1,5 +1,5 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { PokemonType } from "../../type/type";
+import type { PokemonType } from "../../entities/pokemon/model/pokemonTypes";
 import type { RootState } from "../../app/store";
 import { createSlice } from "@reduxjs/toolkit";
 import { pokemonRandom, addPokemonButton } from "./pokemonActions";
@@ -49,4 +49,4 @@ const pokemonSlice = createSlice({
 
 export const { setPokemons, addPokemon } = pokemonSlice.actions;
 export default pokemonSlice.reducer;
-export const selectPokemons = (state:  RootState ) => state.pokemon.pokemons;
+export const selectPokemons = (state: RootState) => state.pokemon.pokemons;

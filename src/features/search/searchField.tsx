@@ -1,4 +1,4 @@
-import Field from "../../../ui/field/Field";
+import Field from "../../shared/ui/field/Field";
 import { useState } from "react";
 
 export interface SearchFieldProps {
@@ -13,7 +13,7 @@ const SearchField = ({ onSearch }: SearchFieldProps) => {
     e.preventDefault();
     if (searchTerm.trim()) {
       onSearch(searchTerm.trim());
-      setSearchTerm('');
+      setSearchTerm("");
     }
   };
   return (

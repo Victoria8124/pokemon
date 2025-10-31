@@ -2,10 +2,10 @@ import "./Pokemon.module.scss";
 import { useEffect } from "react";
 import styles from "./Pokemon.module.scss";
 import PokemonCrd from "./PokemonCard";
-import { useAppDispatch } from "../../hooks";
-import { useAppSelector } from "../../hooks";
-import { pokemonRandom } from "../../../features/pokemon/pokemonActions";
-import { addPokemonButton } from "../../../features/pokemon/pokemonActions";
+import { useAppDispatch } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
+import { pokemonRandom } from "../../features/pokemon/pokemonActions";
+import { addPokemonButton } from "../../features/pokemon/pokemonActions";
 
 const Pokemon = () => {
   const dispatch = useAppDispatch();

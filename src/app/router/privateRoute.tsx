@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { selectAccessToken } from "../features/auth/authSlice";
+import { selectAccessToken } from "../../features/auth/authSlice";
 import { useSelector } from "react-redux";
 
 export const PrivateRoute = () => {
